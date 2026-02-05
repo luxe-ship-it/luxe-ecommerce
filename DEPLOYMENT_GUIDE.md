@@ -124,6 +124,24 @@ Since Render Free Tier doesn't allow Shell access, **run these commands on your 
 
 ---
 
+## Step 5: Google OAuth Configuration (Important!)
+
+If you see an **Access Blocked: Authorization Error**, you need to whitelist your Render URL in Google.
+
+1.  Go to [Google Cloud Console](https://console.cloud.google.com/).
+2.  Navigate to **APIs & Services** > **Credentials**.
+3.  Click on your **OAuth 2.0 Client ID** to edit it.
+4.  Under **Authorized JavaScript origins**, add your **Frontend URL**:
+    - Example: `https://luxe-frontend.onrender.com`
+    - *(Do NOT add a trailing slash)*
+5.  Under **Authorized redirect URIs**, add:
+    - Example: `https://luxe-frontend.onrender.com`
+    - Example: `https://luxe-frontend.onrender.com/auth/google/callback` (optional but good practice)
+6.  Click **Save**.
+7.  **Wait 5-10 minutes** for changes to propagate.
+
+---
+
 ## Troubleshooting
 
 - **Database Errors?** Ensure you added `?pgbouncer=true` to the end of your Supabase URL if using the Transaction (6543) port. For Session (5432) port, standard URL is fine. Recommended: Use standard 5432 for stability first.
