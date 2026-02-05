@@ -6,15 +6,6 @@ import path from "path";
 export default defineConfig(async ({ mode }) => {
   const plugins: PluginOption[] = [react()];
 
-  if (mode === 'development') {
-    try {
-      const { expressPlugin } = await import("./vite-express-plugin");
-      plugins.push(expressPlugin());
-    } catch (e) {
-      console.warn("Could not load express plugin:", e);
-    }
-  }
-
   return {
     server: {
       host: "::",
