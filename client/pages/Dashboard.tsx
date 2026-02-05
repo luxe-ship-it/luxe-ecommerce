@@ -84,72 +84,74 @@ function ReturnsTab() {
     <div className="space-y-6">
       <h2 className="text-xl font-semibold">Return & Exchange Requests</h2>
       <div className="border rounded-lg overflow-hidden">
-        <table className="w-full text-sm text-left">
-          <thead className="bg-muted text-muted-foreground font-medium">
-            <tr>
-              <th className="p-4">Order ID</th>
-              <th className="p-4">User</th>
-              <th className="p-4">Type</th>
-              <th className="p-4">Reason</th>
-              <th className="p-4">Status</th>
-              <th className="p-4">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y">
-            {returns?.map((req: any) => (
-              <tr key={req.id} className="hover:bg-muted/50">
-                <td className="p-4 font-mono">{req.orderId.slice(0, 8)}</td>
-                <td className="p-4">
-                  <div className="font-medium">{req.order.user.name}</div>
-                  <div className="text-xs text-muted-foreground">{req.order.user.email}</div>
-                </td>
-                <td className="p-4">
-                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${req.type === 'RETURN' ? 'bg-orange-100 text-orange-800' : 'bg-blue-100 text-blue-800'
-                    }`}>
-                    {req.type}
-                  </span>
-                </td>
-                <td className="p-4 max-w-xs truncate" title={req.reason}>{req.reason}</td>
-                <td className="p-4">
-                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${req.status === 'APPROVED' ? 'bg-green-100 text-green-800' :
-                    req.status === 'REJECTED' ? 'bg-red-100 text-red-800' :
-                      'bg-yellow-100 text-yellow-800'
-                    }`}>
-                    {req.status}
-                  </span>
-                </td>
-                <td className="p-4 space-x-2">
-                  {req.status === 'REQUESTED' && (
-                    <>
-                      <Button size="sm" variant="outline" className="border-green-500 text-green-600 hover:bg-green-50"
-                        onClick={() => {
-                          if (confirm('Approve this return request? Refund will be initiated.')) {
-                            updateStatusMutation.mutate({ id: req.id, status: 'APPROVED' });
-                          }
-                        }}
-                      >
-                        Approve
-                      </Button>
-                      <Button size="sm" variant="outline" className="border-red-500 text-red-600 hover:bg-red-50"
-                        onClick={() => {
-                          const note = prompt('Reason for rejection:');
-                          if (note !== null) {
-                            updateStatusMutation.mutate({ id: req.id, status: 'REJECTED', adminNotes: note });
-                          }
-                        }}
-                      >
-                        Reject
-                      </Button>
-                    </>
-                  )}
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs md:text-sm text-left">
+            <thead className="bg-muted text-muted-foreground font-medium">
+              <tr>
+                <th className="p-4">Order ID</th>
+                <th className="p-4">User</th>
+                <th className="p-4">Type</th>
+                <th className="p-4">Reason</th>
+                <th className="p-4">Status</th>
+                <th className="p-4">Actions</th>
               </tr>
-            ))}
-            {returns?.length === 0 && (
-              <tr><td colSpan={6} className="p-4 text-center text-muted-foreground">No return requests found</td></tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y">
+              {returns?.map((req: any) => (
+                <tr key={req.id} className="hover:bg-muted/50">
+                  <td className="p-4 font-mono">{req.orderId.slice(0, 8)}</td>
+                  <td className="p-4">
+                    <div className="font-medium">{req.order.user.name}</div>
+                    <div className="text-xs text-muted-foreground">{req.order.user.email}</div>
+                  </td>
+                  <td className="p-4">
+                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${req.type === 'RETURN' ? 'bg-orange-100 text-orange-800' : 'bg-blue-100 text-blue-800'
+                      }`}>
+                      {req.type}
+                    </span>
+                  </td>
+                  <td className="p-4 max-w-xs truncate" title={req.reason}>{req.reason}</td>
+                  <td className="p-4">
+                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${req.status === 'APPROVED' ? 'bg-green-100 text-green-800' :
+                      req.status === 'REJECTED' ? 'bg-red-100 text-red-800' :
+                        'bg-yellow-100 text-yellow-800'
+                      }`}>
+                      {req.status}
+                    </span>
+                  </td>
+                  <td className="p-4 space-x-2">
+                    {req.status === 'REQUESTED' && (
+                      <>
+                        <Button size="sm" variant="outline" className="border-green-500 text-green-600 hover:bg-green-50"
+                          onClick={() => {
+                            if (confirm('Approve this return request? Refund will be initiated.')) {
+                              updateStatusMutation.mutate({ id: req.id, status: 'APPROVED' });
+                            }
+                          }}
+                        >
+                          Approve
+                        </Button>
+                        <Button size="sm" variant="outline" className="border-red-500 text-red-600 hover:bg-red-50"
+                          onClick={() => {
+                            const note = prompt('Reason for rejection:');
+                            if (note !== null) {
+                              updateStatusMutation.mutate({ id: req.id, status: 'REJECTED', adminNotes: note });
+                            }
+                          }}
+                        >
+                          Reject
+                        </Button>
+                      </>
+                    )}
+                  </td>
+                </tr>
+              ))}
+              {returns?.length === 0 && (
+                <tr><td colSpan={6} className="p-4 text-center text-muted-foreground">No return requests found</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
@@ -413,42 +415,44 @@ function ProductsTab() {
       )}
 
       <div className="border rounded-lg overflow-hidden">
-        <table className="w-full text-sm text-left">
-          <thead className="bg-muted text-muted-foreground font-medium">
-            <tr>
-              <th className="p-4">Name</th>
-              <th className="p-4">Category</th>
-              <th className="p-4">Price</th>
-              <th className="p-4">Featured</th>
-              <th className="p-4">Stock</th>
-              <th className="p-4 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y">
-            {products?.map((p: any) => (
-              <tr key={p.id} className="hover:bg-muted/50">
-                <td className="p-4 font-medium">{p.name}</td>
-                <td className="p-4">{p.category?.name}</td>
-                <td className="p-4">
-                  <div>
-                    ₹{p.basePrice}
-                    {p.originalPrice && <span className="text-xs text-muted-foreground line-through ml-2">₹{p.originalPrice}</span>}
-                  </div>
-                </td>
-                <td className="p-4">{p.isFeatured ? "Yes" : "No"}</td>
-                <td className="p-4">{p.stock}</td>
-                <td className="p-4 text-right">
-                  <Button variant="ghost" size="icon" onClick={() => setEditingProduct(p)} className="text-primary hover:bg-primary/10 mr-2">
-                    <Edit size={16} />
-                  </Button>
-                  <Button variant="ghost" size="icon" onClick={() => deleteProductMutation.mutate(p.id)} className="text-destructive hover:text-destructive hover:bg-destructive/10">
-                    <Trash2 size={16} />
-                  </Button>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs md:text-sm text-left">
+            <thead className="bg-muted text-muted-foreground font-medium">
+              <tr>
+                <th className="p-4">Name</th>
+                <th className="p-4">Category</th>
+                <th className="p-4">Price</th>
+                <th className="p-4">Featured</th>
+                <th className="p-4">Stock</th>
+                <th className="p-4 text-right">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y">
+              {products?.map((p: any) => (
+                <tr key={p.id} className="hover:bg-muted/50">
+                  <td className="p-4 font-medium">{p.name}</td>
+                  <td className="p-4">{p.category?.name}</td>
+                  <td className="p-4">
+                    <div>
+                      ₹{p.basePrice}
+                      {p.originalPrice && <span className="text-xs text-muted-foreground line-through ml-2">₹{p.originalPrice}</span>}
+                    </div>
+                  </td>
+                  <td className="p-4">{p.isFeatured ? "Yes" : "No"}</td>
+                  <td className="p-4">{p.stock}</td>
+                  <td className="p-4 text-right">
+                    <Button variant="ghost" size="icon" onClick={() => setEditingProduct(p)} className="text-primary hover:bg-primary/10 mr-2">
+                      <Edit size={16} />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => deleteProductMutation.mutate(p.id)} className="text-destructive hover:text-destructive hover:bg-destructive/10">
+                      <Trash2 size={16} />
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
@@ -505,89 +509,91 @@ function OrdersTab() {
     <div className="space-y-6">
       <h2 className="text-xl font-semibold">Recent Orders</h2>
       <div className="border rounded-lg overflow-hidden">
-        <table className="w-full text-sm text-left">
-          <thead className="bg-muted text-muted-foreground font-medium">
-            <tr>
-              <th className="p-4">Order ID</th>
-              <th className="p-4">User</th>
-              <th className="p-4">Total</th>
-              <th className="p-4">Payment</th>
-              <th className="p-4">Status</th>
-              <th className="p-4">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y">
-            {orders?.map((order: any) => (
-              <tr key={order.id} className="hover:bg-muted/50">
-                <td className="p-4 font-mono">{order.id.slice(0, 8)}</td>
-                <td className="p-4">
-                  <div className="font-medium">{order.user?.name}</div>
-                  <div className="text-xs text-muted-foreground">{order.user?.email}</div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    Phone: {order.shippingAddress?.phone || order.user?.phone || 'N/A'}
-                  </div>
-                  <div className="text-xs text-muted-foreground italic mt-1 max-w-[200px] truncate">
-                    {order.shippingAddress?.street}, {order.shippingAddress?.city}
-                  </div>
-                </td>
-                <td className="p-4 font-medium">₹{Number(order.totalAmount).toLocaleString()}</td>
-                <td className="p-4">
-                  <div className="flex flex-col gap-1">
-                    <span className={`inline-flex w-fit items-center px-2 py-0.5 rounded text-xs font-medium border ${order.paymentMethod === 'COD'
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs md:text-sm text-left">
+            <thead className="bg-muted text-muted-foreground font-medium">
+              <tr>
+                <th className="p-4">Order ID</th>
+                <th className="p-4">User</th>
+                <th className="p-4">Total</th>
+                <th className="p-4">Payment</th>
+                <th className="p-4">Status</th>
+                <th className="p-4">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y">
+              {orders?.map((order: any) => (
+                <tr key={order.id} className="hover:bg-muted/50">
+                  <td className="p-4 font-mono">{order.id.slice(0, 8)}</td>
+                  <td className="p-4">
+                    <div className="font-medium">{order.user?.name}</div>
+                    <div className="text-xs text-muted-foreground">{order.user?.email}</div>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      Phone: {order.shippingAddress?.phone || order.user?.phone || 'N/A'}
+                    </div>
+                    <div className="text-xs text-muted-foreground italic mt-1 max-w-[200px] truncate">
+                      {order.shippingAddress?.street}, {order.shippingAddress?.city}
+                    </div>
+                  </td>
+                  <td className="p-4 font-medium">₹{Number(order.totalAmount).toLocaleString()}</td>
+                  <td className="p-4">
+                    <div className="flex flex-col gap-1">
+                      <span className={`inline-flex w-fit items-center px-2 py-0.5 rounded text-xs font-medium border ${order.paymentMethod === 'COD'
                         ? 'bg-blue-50 text-blue-700 border-blue-200'
                         : 'bg-purple-50 text-purple-700 border-purple-200'
-                      }`}>
-                      {order.paymentMethod === 'COD' ? 'Cash on Delivery' : 'Online'}
-                    </span>
-                    {order.paymentMethod === 'ONLINE' && (
-                      <span className={`text-xs font-medium ${order.payment?.status === 'COMPLETED' ? 'text-green-600' : 'text-orange-600'
                         }`}>
-                        {order.payment?.status === 'COMPLETED' ? 'Paid' : 'Pending'}
+                        {order.paymentMethod === 'COD' ? 'Cash on Delivery' : 'Online'}
                       </span>
-                    )}
-                    {order.payment?.razorpayPaymentId && (
-                      <span className="text-[10px] text-muted-foreground font-mono" title="Payment ID">
-                        ID: {order.payment.razorpayPaymentId.slice(-8)}...
-                      </span>
-                    )}
-                  </div>
-                </td>
-                <td className="p-4">
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${order.status === 'DELIVERED' ? 'bg-green-100 text-green-800' :
-                    order.status === 'CANCELLED' ? 'bg-red-100 text-red-800' :
-                      'bg-yellow-100 text-yellow-800'
-                    }`}>
-                    {order.status}
-                  </span>
-                  {order.trackingNumber && (
-                    <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                      <Truck size={10} /> {order.trackingNumber}
+                      {order.paymentMethod === 'ONLINE' && (
+                        <span className={`text-xs font-medium ${order.payment?.status === 'COMPLETED' ? 'text-green-600' : 'text-orange-600'
+                          }`}>
+                          {order.payment?.status === 'COMPLETED' ? 'Paid' : 'Pending'}
+                        </span>
+                      )}
+                      {order.payment?.razorpayPaymentId && (
+                        <span className="text-[10px] text-muted-foreground font-mono" title="Payment ID">
+                          ID: {order.payment.razorpayPaymentId.slice(-8)}...
+                        </span>
+                      )}
                     </div>
-                  )}
-                </td>
-                <td className="p-4">
-                  <select
-                    className="h-8 text-xs border rounded bg-background px-2"
-                    value={order.status}
-                    onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                    disabled={order.status === 'CANCELLED'}
-                  >
-                    <option value="PENDING">Pending</option>
-                    <option value="PROCESSING">Processing</option>
-                    <option value="SHIPPED">Shipped</option>
-                    <option value="DELIVERED">Delivered</option>
-                    <option value="CANCELLED">Cancelled</option>
-                  </select>
-                </td>
-              </tr>
-            ))}
-            {orders?.length === 0 && (
-              <tr>
-                <td colSpan={6} className="p-4 text-center text-muted-foreground">No orders found</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+                  </td>
+                  <td className="p-4">
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${order.status === 'DELIVERED' ? 'bg-green-100 text-green-800' :
+                      order.status === 'CANCELLED' ? 'bg-red-100 text-red-800' :
+                        'bg-yellow-100 text-yellow-800'
+                      }`}>
+                      {order.status}
+                    </span>
+                    {order.trackingNumber && (
+                      <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                        <Truck size={10} /> {order.trackingNumber}
+                      </div>
+                    )}
+                  </td>
+                  <td className="p-4">
+                    <select
+                      className="h-8 text-xs border rounded bg-background px-2"
+                      value={order.status}
+                      onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                      disabled={order.status === 'CANCELLED'}
+                    >
+                      <option value="PENDING">Pending</option>
+                      <option value="PROCESSING">Processing</option>
+                      <option value="SHIPPED">Shipped</option>
+                      <option value="DELIVERED">Delivered</option>
+                      <option value="CANCELLED">Cancelled</option>
+                    </select>
+                  </td>
+                </tr>
+              ))}
+              {orders?.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="p-4 text-center text-muted-foreground">No orders found</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <Dialog open={shippingModalOpen} onOpenChange={setShippingModalOpen}>
@@ -632,34 +638,36 @@ function UsersTab() {
     <div className="space-y-6">
       <h2 className="text-xl font-semibold">User Management</h2>
       <div className="border rounded-lg overflow-hidden">
-        <table className="w-full text-sm text-left">
-          <thead className="bg-muted text-muted-foreground font-medium">
-            <tr>
-              <th className="p-4">Name</th>
-              <th className="p-4">Email</th>
-              <th className="p-4">Role</th>
-              <th className="p-4">Joined</th>
-              <th className="p-4">Details</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y">
-            {users?.map((u: any) => (
-              <tr key={u.id} className="hover:bg-muted/50">
-                <td className="p-4 font-medium">{u.name}</td>
-                <td className="p-4">{u.email}</td>
-                <td className="p-4">
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${u.role === 'ADMIN' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'
-                    }`}>{u.role}</span>
-                </td>
-                <td className="p-4">{new Date(u.createdAt).toLocaleDateString()}</td>
-                <td className="p-4 text-muted-foreground text-xs">
-                  {/* Placeholder for address or other details if needed in future */}
-                  ID: {u.id.slice(0, 8)}...
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs md:text-sm text-left">
+            <thead className="bg-muted text-muted-foreground font-medium">
+              <tr>
+                <th className="p-4">Name</th>
+                <th className="p-4">Email</th>
+                <th className="p-4">Role</th>
+                <th className="p-4">Joined</th>
+                <th className="p-4">Details</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y">
+              {users?.map((u: any) => (
+                <tr key={u.id} className="hover:bg-muted/50">
+                  <td className="p-4 font-medium">{u.name}</td>
+                  <td className="p-4">{u.email}</td>
+                  <td className="p-4">
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${u.role === 'ADMIN' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'
+                      }`}>{u.role}</span>
+                  </td>
+                  <td className="p-4">{new Date(u.createdAt).toLocaleDateString()}</td>
+                  <td className="p-4 text-muted-foreground text-xs">
+                    {/* Placeholder for address or other details if needed in future */}
+                    ID: {u.id.slice(0, 8)}...
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
@@ -758,48 +766,50 @@ function CouponsTab() {
       </div>
 
       <div className="border rounded-lg overflow-hidden">
-        <table className="w-full text-sm text-left">
-          <thead className="bg-muted text-muted-foreground font-medium">
-            <tr>
-              <th className="p-4">Code</th>
-              <th className="p-4">Type</th>
-              <th className="p-4">Value</th>
-              <th className="p-4">Usage</th>
-              <th className="p-4">Expires</th>
-              <th className="p-4 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y">
-            {coupons?.map((c: any) => (
-              <tr key={c.id} className="hover:bg-muted/50">
-                <td className="p-4 font-mono font-bold">{c.code}</td>
-                <td className="p-4">{c.type}</td>
-                <td className="p-4 text-green-600 font-medium">
-                  {c.type === 'FLAT' ? `₹${c.value}` : `${c.value}%`}
-                </td>
-                <td className="p-4">
-                  {c.currentUsage} {c.usageLimit ? `/ ${c.usageLimit}` : '(Unlimited)'}
-                </td>
-                <td className="p-4">
-                  {c.expiresAt ? new Date(c.expiresAt).toLocaleDateString() : 'Never'}
-                </td>
-                <td className="p-4 text-right">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => deleteMutation.mutate(c.id)}
-                    className="text-destructive hover:bg-destructive/10"
-                  >
-                    <Trash2 size={16} />
-                  </Button>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs md:text-sm text-left">
+            <thead className="bg-muted text-muted-foreground font-medium">
+              <tr>
+                <th className="p-4">Code</th>
+                <th className="p-4">Type</th>
+                <th className="p-4">Value</th>
+                <th className="p-4">Usage</th>
+                <th className="p-4">Expires</th>
+                <th className="p-4 text-right">Actions</th>
               </tr>
-            ))}
-            {coupons?.length === 0 && (
-              <tr><td colSpan={6} className="p-4 text-center text-muted-foreground">No active coupons</td></tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y">
+              {coupons?.map((c: any) => (
+                <tr key={c.id} className="hover:bg-muted/50">
+                  <td className="p-4 font-mono font-bold">{c.code}</td>
+                  <td className="p-4">{c.type}</td>
+                  <td className="p-4 text-green-600 font-medium">
+                    {c.type === 'FLAT' ? `₹${c.value}` : `${c.value}%`}
+                  </td>
+                  <td className="p-4">
+                    {c.currentUsage} {c.usageLimit ? `/ ${c.usageLimit}` : '(Unlimited)'}
+                  </td>
+                  <td className="p-4">
+                    {c.expiresAt ? new Date(c.expiresAt).toLocaleDateString() : 'Never'}
+                  </td>
+                  <td className="p-4 text-right">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => deleteMutation.mutate(c.id)}
+                      className="text-destructive hover:bg-destructive/10"
+                    >
+                      <Trash2 size={16} />
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+              {coupons?.length === 0 && (
+                <tr><td colSpan={6} className="p-4 text-center text-muted-foreground">No active coupons</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
