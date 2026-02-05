@@ -5,8 +5,8 @@ import bcrypt from "bcryptjs";
 async function main() {
     console.log("Seeding database...");
 
-    const adminEmail = "admin@luxe.com";
-    const password = "admin123";
+    const adminEmail = process.env.ADMIN_EMAIL || "admin@luxe.com";
+    const password = process.env.ADMIN_PASSWORD || "admin123";
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const admin = await prisma.user.upsert({

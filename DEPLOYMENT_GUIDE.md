@@ -18,6 +18,8 @@ Before you begin, ensure you have the following keys ready.
 | `CLOUDINARY_CLOUD_NAME`| Image Host Name | **Cloudinary Dashboard** |
 | `CLOUDINARY_API_KEY` | Image Host Key | **Cloudinary Dashboard** |
 | `CLOUDINARY_API_SECRET`| Image Host Secret | **Cloudinary Dashboard** |
+| `ADMIN_EMAIL` | Admin Email (for seeding) | Set your desired admin email |
+| `ADMIN_PASSWORD` | Admin Password (for seeding) | Set your desired admin password |
 | `PORT` | Server Port | Set to `10000` (Render Default) |
 
 ### Frontend Secrets (for Render Static Site)
