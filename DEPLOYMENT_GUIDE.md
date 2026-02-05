@@ -81,13 +81,20 @@ Before you begin, ensure you have the following keys ready.
     - **Branch:** `main`
     - **Root Directory:** `.` (Leave empty)
     - **Build Command:** `npm run build`
-    - **Publish Directory:** `dist`
+    - **Publish Directory:** `dist/spa`  <-- **IMPORTANT CHANGE**
 4.  **Environment Variables:**
     - Add the **Frontend Secrets**:
         - `VITE_API_URL`: Paste your **Backend URL** from Step 2.
         - `VITE_GOOGLE_CLIENT_ID`: Your Google client ID.
         - `VITE_RAZORPAY_KEY_ID`: Your Razorpay Key ID.
-5.  **Create:** Click **Create Static Site**.
+5.  **Redirects/Rewrites (Critical for React):**
+    - Go to **Redirects/Rewrites** tab in your Render Static Site.
+    - Add a new rule:
+        - **Source:** `/*`
+        - **Destination:** `/index.html`
+        - **Action:** `Rewrite`
+    - This fixes "Not Found" errors when refreshing pages.
+6.  **Create:** Click **Create Static Site**.
 6.  **Wait:** Wait for build to complete.
 7.  **Done!** Visit your new website URL.
 
