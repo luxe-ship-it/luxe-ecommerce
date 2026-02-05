@@ -1,0 +1,273 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  passwordHash String?
+  name         String?
+  image        String?
+  role         Role          @default(USER)
+  googleId     String?       @unique
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  address      String?
+  phone        String?
+  addresses    Address[]
+  cart         Cart?
+  couponUsages CouponUsage[]
+  orders       Order[]
+  reviews      Review[]
+  wishlist     Wishlist?
+}
+
+model Address {
+  id        String  @id @default(uuid())
+  userId    String
+  street    String
+  city      String
+  state     String
+  zip       String
+  country   String
+  isDefault Boolean @default(false)
+  user      User    @relation(fields: [userId], references: [id])
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  description String?
+  products    Product[]
+}
+
+model Product {
+  id            String           @id @default(uuid())
+  name          String
+  description   String
+  basePrice     Decimal
+  originalPrice Decimal?
+  stock         Int
+  isFeatured    Boolean          @default(false)
+  images        String[]
+  categoryId    String
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  cartItems     CartItem[]
+  orderItems    OrderItem[]
+  category      Category         @relation(fields: [categoryId], references: [id])
+  variants      ProductVariant[]
+  reviews       Review[]
+  wishlistItems WishlistItem[]
+}
+
+model ProductVariant {
+  id        String   @id @default(uuid())
+  productId String
+  sku       String   @unique
+  size      String?
+  color     String?
+  stock     Int
+  price     Decimal?
+  product   Product  @relation(fields: [productId], references: [id])
+}
+
+model Cart {
+  id        String     @id @default(uuid())
+  userId    String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  user      User       @relation(fields: [userId], references: [id])
+  items     CartItem[]
+}
+
+model CartItem {
+  id        String  @id @default(uuid())
+  cartId    String
+  productId String
+  quantity  Int
+  cart      Cart    @relation(fields: [cartId], references: [id])
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([cartId, productId])
+}
+
+model Wishlist {
+  id     String         @id @default(uuid())
+  userId String         @unique
+  user   User           @relation(fields: [userId], references: [id])
+  items  WishlistItem[]
+}
+
+model WishlistItem {
+  id         String   @id @default(uuid())
+  wishlistId String
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+  wishlist   Wishlist @relation(fields: [wishlistId], references: [id])
+
+  @@unique([wishlistId, productId])
+}
+
+model Order {
+  id              String        @id @default(uuid())
+  userId          String
+  status          OrderStatus   @default(PENDING)
+  totalAmount     Decimal
+  shippingAddress Json
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  paymentMethod   PaymentMethod @default(ONLINE)
+  deliveredAt     DateTime?
+  shippedAt       DateTime?
+  trackingNumber  String?
+  couponUsage     CouponUsage?
+  user            User          @relation(fields: [userId], references: [id])
+  items           OrderItem[]
+  returns         OrderReturn[]
+  payment         Payment?
+  refunds         Refund[]
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Decimal
+  order     Order   @relation(fields: [orderId], references: [id])
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Payment {
+  id                String        @id @default(uuid())
+  orderId           String        @unique
+  razorpayOrderId   String        @unique
+  razorpayPaymentId String?
+  razorpaySignature String?
+  amount            Decimal
+  status            PaymentStatus @default(PENDING)
+  createdAt         DateTime      @default(now())
+  order             Order         @relation(fields: [orderId], references: [id])
+}
+
+model Coupon {
+  id           String        @id @default(uuid())
+  code         String        @unique
+  type         DiscountType
+  value        Decimal
+  minOrder     Decimal?
+  maxDiscount  Decimal?
+  expiresAt    DateTime?
+  usageLimit   Int?
+  currentUsage Int           @default(0)
+  usages       CouponUsage[]
+}
+
+model CouponUsage {
+  id       String @id @default(uuid())
+  orderId  String @unique
+  couponId String
+  userId   String
+  coupon   Coupon @relation(fields: [couponId], references: [id])
+  order    Order  @relation(fields: [orderId], references: [id])
+  user     User   @relation(fields: [userId], references: [id])
+}
+
+model ContactQuery {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  userId    String
+  productId String
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  product   Product  @relation(fields: [productId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model SiteSettings {
+  id    String @id @default(uuid())
+  key   String @unique
+  value String
+}
+
+model OrderReturn {
+  id          String    @id @default(uuid())
+  orderId     String
+  reason      String
+  type        String
+  status      String    @default("REQUESTED")
+  requestedAt DateTime  @default(now())
+  approvedAt  DateTime?
+  completedAt DateTime?
+  adminNotes  String?
+  images      String[]
+  refundId    String?   @unique
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  order       Order     @relation(fields: [orderId], references: [id])
+  refund      Refund?   @relation(fields: [refundId], references: [id])
+}
+
+model Refund {
+  id            String       @id @default(uuid())
+  orderId       String
+  amount        Decimal
+  method        String
+  status        String       @default("PENDING")
+  reason        String
+  initiatedAt   DateTime     @default(now())
+  completedAt   DateTime?
+  transactionId String?
+  notes         String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  orderReturn   OrderReturn?
+  order         Order        @relation(fields: [orderId], references: [id])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  ONLINE
+  COD
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum DiscountType {
+  FLAT
+  PERCENTAGE
+}
