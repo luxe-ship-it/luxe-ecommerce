@@ -22,6 +22,12 @@ export function createServer() {
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
 
+  // Logging Middleware
+  app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} [${req.method}] ${req.path}`);
+    next();
+  });
+
   // API routes
   app.use("/api/auth", authRouter);
   app.use("/api/products", productRouter);
