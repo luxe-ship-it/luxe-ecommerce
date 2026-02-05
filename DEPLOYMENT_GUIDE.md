@@ -100,23 +100,27 @@ Before you begin, ensure you have the following keys ready.
 
 ---
 
-## Step 4: Initialize Database (Critical!)
+## Step 4: Initialize Database (Run Locally)
 
-Your Supabase database is currently empty. You must create the tables and admin user.
+Since Render Free Tier doesn't allow Shell access, **run these commands on your local computer** (VS Code).
 
-1.  **Go to Render Dashboard** > **Backend Service** (`luxe-backend`).
-2.  Click on the **Shell** tab (on the left sidebar).
-    - *Note: You may need to wait for the service to be "Live" first.*
-3.  **Run this command** to create tables:
-    ```bash
-    npx prisma db push
-    ```
-    - *You should see "🚀  Your database is now in sync with your Prisma schema."*
-4.  **Run this command** to seed the Admin user:
-    ```bash
-    npx tsx prisma/seed.ts
-    ```
-    - *You should see "Admin user ready: ..."*
+1.  **Update Local Config:**
+    - Open your local `.env` file in VS Code.
+    - Temporarily replace `DATABASE_URL` with your **Supabase Connection String** (from Step 1).
+    - *Note: Don't worry, `.env` is ignored by git and won't be pushed.*
+
+2.  **Push Schema:**
+    - Open your VS Code terminal.
+    - Run: `npx prisma db push`
+    - *Success message: "🚀 Your database is now in sync with your Prisma schema."*
+
+3.  **Seed Admin:**
+    - Run: `npx tsx prisma/seed.ts`
+    - *Success message: "Admin user ready..."*
+
+4.  **Verify:**
+    - Go to your Supabase Dashboard > Table Editor. You should see tables like `User`, `Product`, etc.
+    - Your live website login will now work!
 
 ---
 
