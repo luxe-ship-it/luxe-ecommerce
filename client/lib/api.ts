@@ -14,7 +14,8 @@ export async function apiRequest(
         headers["Authorization"] = `Bearer ${token}`;
     }
 
-    const res = await fetch(`/api${path}`, {
+    const apiUrl = import.meta.env.VITE_API_URL || '';
+    const res = await fetch(`${apiUrl}/api${path}`, {
         method,
         headers,
         body: body instanceof FormData ? body : (body ? JSON.stringify(body) : undefined),

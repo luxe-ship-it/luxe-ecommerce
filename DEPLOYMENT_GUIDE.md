@@ -1,80 +1,98 @@
-# LUXE Deployment Guide
+# LUXE Deployment Guide (Supabase + Render)
 
-This guide covers how to push your code to GitHub and deploy the application.
+This detailed guide helps you deploy the LUXE E-Commerce platform using **Supabase** for the database and **Render** for both Frontend and Backend.
 
-## 1. Preparing for GitHub
+## 1. Prerequisites (Environment Variables)
 
-We have updated `.gitignore` to ensure sensitive files like `.env` and heavy folders like `node_modules` are **NOT** uploaded.
+Before you begin, ensure you have the following keys ready.
 
-### Step 1: Initialize Git
-Open your terminal in the project folder and run:
+### Backend Secrets (for Render Backend)
+| Variable | Description | Where to find it |
+| :--- | :--- | :--- |
+| `DATABASE_URL` | PostgreSQL Connection String | **Supabase** (See Step 1) |
+| `JWT_SECRET` | Secret key for encryption | Generate any random string (e.g., `mysecret123`) |
+| `GOOGLE_CLIENT_ID` | OAuth Client ID | **Google Cloud Console** |
+| `GOOGLE_CLIENT_SECRET` | OAuth Client Secret | **Google Cloud Console** |
+| `RAZORPAY_KEY_ID` | Payment Public Key | **Razorpay Dashboard** |
+| `RAZORPAY_KEY_SECRET` | Payment Secret Key | **Razorpay Dashboard** |
+| `CLOUDINARY_CLOUD_NAME`| Image Host Name | **Cloudinary Dashboard** |
+| `CLOUDINARY_API_KEY` | Image Host Key | **Cloudinary Dashboard** |
+| `CLOUDINARY_API_SECRET`| Image Host Secret | **Cloudinary Dashboard** |
+| `PORT` | Server Port | Set to `10000` (Render Default) |
 
-```bash
-git init
-git add .
-git commit -m "Initial commit: LUXE E-Commerce Platform"
-```
-
-### Step 2: Create a GitHub Repository
-1. Go to [GitHub.com](https://github.com/new).
-2. Create a new repository (e.g., `luxe-ecommerce`).
-3. **Do not** initialize with README, license, or gitignore (we already have them).
-4. Copy the "HTTPS" or "SSH" URL provided (e.g., `https://github.com/your-username/luxe-ecommerce.git`).
-
-### Step 3: Push Code
-Run these commands in your terminal (replace URL with yours):
-
-```bash
-git branch -M main
-git remote add origin https://github.com/your-username/luxe-ecommerce.git
-git push -u origin main
-```
+### Frontend Secrets (for Render Static Site)
+| Variable | Description | Values |
+| :--- | :--- | :--- |
+| `VITE_API_URL` | Backend URL | **Your Render Backend URL** (e.g., `https://luxe-backend.onrender.com`) |
+| `VITE_GOOGLE_CLIENT_ID`| Same as Backend | Copy `GOOGLE_CLIENT_ID` |
+| `VITE_RAZORPAY_KEY_ID` | Same as Backend | Copy `RAZORPAY_KEY_ID` |
 
 ---
 
-## 2. Deploying the Application
+## Step 1: Set up Database (Supabase)
 
-This is a **Monorepo** (Frontend + Backend in one). The easiest way to deploy is using **Railway** or **Render** for the backend (and database), and **Vercel** for the frontend.
+1.  **Sign Up/Login:** Go to [Supabase.com](https://supabase.com/).
+2.  **Create Project:** Click **New Project**.
+    - Name: `luxe-db`
+    - Password: **Save this password!** You will need it.
+    - Region: Choosing a region close to you (e.g., Mumbai, Singapore).
+3.  **Get Connection String:**
+    - Go to **Project Settings** (Cog icon) > **Database** > **Connection parameters**.
+    - Find **Connection String** and switch tab to **URI**.
+    - **Important:** Use the standard **"Session"** connection string (Port 5432) first.
+    - Value Format: `postgresql://postgres.[ref]:[password]@aws-0-[region].pooler.supabase.com:5432/postgres`
+    - *(Replace `[password]` with your actual password).*
+    - **Copy this string.** This is your `DATABASE_URL`.
 
-### Option A: Railway (Recommended for Full Stack)
+---
 
-Railway is great because it handles both the Node.js backend and the PostgreSQL database easily.
+## Step 2: Deploy Backend (Render)
 
-1. **Sign Up:** Go to [Railway.app](https://railway.app/) and login with GitHub.
-2. **New Project:** Click "New Project" > "Deploy from GitHub repo" > Select `luxe-ecommerce`.
-3. **Database:**
-   - Right-click the project view > "New" > "Database" > "PostgreSQL".
-   - Railway will provide a `DATABASE_URL`.
-   - Go to your App service > "Settings" > "Variables".
-   - Add `DATABASE_URL` (copy from the PostgreSQL service).
-4. **Environment Variables:**
-   - Add all other variables from your local `.env`:
-     - `RAZORPAY_KEY_ID`
-     - `RAZORPAY_KEY_SECRET`
-     - `GOOGLE_CLIENT_ID`
-     - `JWT_SECRET`
-     - `CLOUDINARY_CLOUD_NAME` (and others)
-5. **Build Command:**
-   - In Settings > Build Command: `npm install && npx prisma migrate deploy && npm run build`
-6. **Start Command:**
-   - `npm run start`
+1.  **Login:** Go to [Render.com](https://render.com/).
+2.  **New Web Service:** Click **New +** > **Web Service**.
+3.  **Connect Repo:** Select your `luxe-ecommerce` repository.
+4.  **Configure Settings:**
+    - **Name:** `luxe-backend`
+    - **Region:** Same as Supabase if possible.
+    - **Branch:** `main`
+    - **Root Directory:** `.` (Leave empty)
+    - **Runtime:** `Node`
+    - **Build Command:** `npm install && npx prisma generate && npm run build:server`
+    - **Start Command:** `npm run server`
+5.  **Environment Variables:**
+    - Scroll down to "Environment Variables" and click **Add Environment Variable**.
+    - Add **ALL** variables listed in the **Backend Secrets** table above.
+    - *Double check `DATABASE_URL` matches your Supabase string.*
+6.  **Create:** Click **Create Web Service**.
+7.  **Wait:** It will build and verify.
+    - If it fails, check logs. Common error: Invalid `DATABASE_URL`.
+8.  **Copy URL:** Once deployed, copy the service URL from top left (e.g., `https://luxe-backend.onrender.com`).
 
-### Option B: Vercel (Frontend) + Render (Backend)
+---
 
-**Backend (Render):**
-1. Create a "Web Service" on [Render.com](https://render.com/).
-2. Connect GitHub repo.
-3. Build Command: `npm install && npm run build:server` (You might need to adjust scripts).
-4. Start Command: `npm run server`.
-5. Add Environment Variables.
+## Step 3: Deploy Frontend (Render)
 
-**Frontend (Vercel):**
-1. Import repo to [Vercel](https://vercel.com/).
-2. Framework Preset: Vite.
-3. Build Command: `npm run build`.
-4. Environment Variables: Add `VITE_API_URL` pointing to your Render Backend URL.
+1.  **New Static Site:** Click **New +** > **Static Site** on Render.
+2.  **Connect Repo:** Select the same `luxe-ecommerce` repository.
+3.  **Configure Settings:**
+    - **Name:** `luxe-frontend`
+    - **Branch:** `main`
+    - **Root Directory:** `.` (Leave empty)
+    - **Build Command:** `npm run build`
+    - **Publish Directory:** `dist`
+4.  **Environment Variables:**
+    - Add the **Frontend Secrets**:
+        - `VITE_API_URL`: Paste your **Backend URL** from Step 2.
+        - `VITE_GOOGLE_CLIENT_ID`: Your Google client ID.
+        - `VITE_RAZORPAY_KEY_ID`: Your Razorpay Key ID.
+5.  **Create:** Click **Create Static Site**.
+6.  **Wait:** Wait for build to complete.
+7.  **Done!** Visit your new website URL.
 
-## 3. Essential Checks Before Pushing
-- [x] **.gitignore:** Verified to exclude `.env` and `node_modules`.
-- [x] **Build:** Run `npm run build` locally to ensure no errors.
-- [x] **Environment:** Ensure you have the keys ready for the production dashboard.
+---
+
+## Troubleshooting
+
+- **Database Errors?** Ensure you added `?pgbouncer=true` to the end of your Supabase URL if using the Transaction (6543) port. For Session (5432) port, standard URL is fine. Recommended: Use standard 5432 for stability first.
+- **Frontend not connecting?** Check `VITE_API_URL`. It must **NOT** have a trailing slash (e.g., correct: `.../onrender.com`, incorrect: `.../onrender.com/`). The code appends `/api`.
+- **Images not uploading?** Verify `CLOUDINARY_` keys in Backend Env Vars.
