@@ -85,7 +85,7 @@ function ReturnsTab() {
       <h2 className="text-xl font-semibold">Return & Exchange Requests</h2>
       <div className="border rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-xs md:text-sm text-left">
+          <table className="w-full text-xs md:text-sm text-left whitespace-nowrap">
             <thead className="bg-muted text-muted-foreground font-medium">
               <tr>
                 <th className="p-4">Order ID</th>
@@ -416,7 +416,7 @@ function ProductsTab() {
 
       <div className="border rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-xs md:text-sm text-left">
+          <table className="w-full text-xs md:text-sm text-left whitespace-nowrap">
             <thead className="bg-muted text-muted-foreground font-medium">
               <tr>
                 <th className="p-4">Name</th>
@@ -510,7 +510,7 @@ function OrdersTab() {
       <h2 className="text-xl font-semibold">Recent Orders</h2>
       <div className="border rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-xs md:text-sm text-left">
+          <table className="w-full text-xs md:text-sm text-left whitespace-nowrap">
             <thead className="bg-muted text-muted-foreground font-medium">
               <tr>
                 <th className="p-4">Order ID</th>
@@ -639,7 +639,7 @@ function UsersTab() {
       <h2 className="text-xl font-semibold">User Management</h2>
       <div className="border rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-xs md:text-sm text-left">
+          <table className="w-full text-xs md:text-sm text-left whitespace-nowrap">
             <thead className="bg-muted text-muted-foreground font-medium">
               <tr>
                 <th className="p-4">Name</th>
@@ -767,7 +767,7 @@ function CouponsTab() {
 
       <div className="border rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-xs md:text-sm text-left">
+          <table className="w-full text-xs md:text-sm text-left whitespace-nowrap">
             <thead className="bg-muted text-muted-foreground font-medium">
               <tr>
                 <th className="p-4">Code</th>

@@ -43,7 +43,7 @@ export function QueriesTab() {
 
             <div className="border rounded-lg overflow-hidden">
                 <div className="overflow-x-auto">
-                    <table className="w-full text-xs md:text-sm text-left">
+                    <table className="w-full text-xs md:text-sm text-left whitespace-nowrap">
                         <thead className="bg-muted text-muted-foreground font-medium">
                             <tr>
                                 <th className="p-4">Name</th>
