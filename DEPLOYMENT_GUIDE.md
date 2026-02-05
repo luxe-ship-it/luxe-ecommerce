@@ -41,10 +41,13 @@ Before you begin, ensure you have the following keys ready.
 3.  **Get Connection String:**
     - Go to **Project Settings** (Cog icon) > **Database** > **Connection parameters**.
     - Find **Connection String** and switch tab to **URI**.
-    - **Important:** Use the standard **"Session"** connection string (Port 5432) first.
-    - Value Format: `postgresql://postgres.[ref]:[password]@aws-0-[region].pooler.supabase.com:5432/postgres`
-    - *(Replace `[password]` with your actual password).*
-    - **Copy this string.** This is your `DATABASE_URL`.
+    - **Important:** For Render, use the **"Transaction" (Pooler)** connection string (Port 6543).
+    - Go to **Project Settings** > **Database** > **Connection parameters**.
+    - Uncheck "Use direct connection" (or select Mode: Transaction).
+    - Value Format: `postgresql://postgres.[ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres?pgbouncer=true`
+    - *(Ensure `?pgbouncer=true` is at the end!)*
+    - **Copy this string.** This is your `DATABASE_URL` for **Render**.
+    - *(For local development/migrations, you can still use the 5432 direct port, but 6543 is safer for the deployed app).*
 
 ---
 
