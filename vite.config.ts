@@ -4,41 +4,36 @@ import path from "path";
 // https://vitejs.dev/config/
 // https://vitejs.dev/config/
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
-  server: {
-    host: "::",
-    port: 8080,
-    fs: {
-      allow: [".", "./client", "./shared"],
-      deny: [".env", ".env.*", "*.{crt,pem}", "**/.git/**", "server/**"],
-    },
-  },
-  build: {
-    outDir: "dist/spa",
-  },
-  plugins: [
-    react(),
-    mode === 'development' && expressPlugin(),
-  ],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./client"),
-      "@shared": path.resolve(__dirname, "./shared"),
-    },
-  },
-}));
+export default defineConfig(async ({ mode }) => {
+  const plugins = [react()];
 
-function expressPlugin(): Plugin {
+  if (mode === 'development') {
+    try {
+      const { expressPlugin } = await import("./vite-express-plugin");
+      plugins.push(expressPlugin());
+    } catch (e) {
+      console.warn("Could not load express plugin:", e);
+    }
+  }
+
   return {
-    name: "express-plugin",
-    apply: "serve", // Only apply during development (serve mode)
-    async configureServer(server) {
-      // Use dynamic import to avoid bundling server code in frontend build
-      const { createServer } = await import("./server/index");
-      const app = createServer();
-
-      // Add Express app as middleware to Vite dev server
-      server.middlewares.use(app);
+    server: {
+      host: "::",
+      port: 8080,
+      fs: {
+        allow: [".", "./client", "./shared"],
+        deny: [".env", ".env.*", "*.{crt,pem}", "**/.git/**", "server/**"],
+      },
+    },
+    build: {
+      outDir: "dist/spa",
+    },
+    plugins,
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./client"),
+        "@shared": path.resolve(__dirname, "./shared"),
+      },
     },
   };
-}
+});
