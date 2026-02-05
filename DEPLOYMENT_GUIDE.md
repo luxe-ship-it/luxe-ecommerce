@@ -100,8 +100,29 @@ Before you begin, ensure you have the following keys ready.
 
 ---
 
+## Step 4: Initialize Database (Critical!)
+
+Your Supabase database is currently empty. You must create the tables and admin user.
+
+1.  **Go to Render Dashboard** > **Backend Service** (`luxe-backend`).
+2.  Click on the **Shell** tab (on the left sidebar).
+    - *Note: You may need to wait for the service to be "Live" first.*
+3.  **Run this command** to create tables:
+    ```bash
+    npx prisma db push
+    ```
+    - *You should see "🚀  Your database is now in sync with your Prisma schema."*
+4.  **Run this command** to seed the Admin user:
+    ```bash
+    npx tsx prisma/seed.ts
+    ```
+    - *You should see "Admin user ready: ..."*
+
+---
+
 ## Troubleshooting
 
 - **Database Errors?** Ensure you added `?pgbouncer=true` to the end of your Supabase URL if using the Transaction (6543) port. For Session (5432) port, standard URL is fine. Recommended: Use standard 5432 for stability first.
 - **Frontend not connecting?** Check `VITE_API_URL`. It must **NOT** have a trailing slash (e.g., correct: `.../onrender.com`, incorrect: `.../onrender.com/`). The code appends `/api`.
 - **Images not uploading?** Verify `CLOUDINARY_` keys in Backend Env Vars.
+
